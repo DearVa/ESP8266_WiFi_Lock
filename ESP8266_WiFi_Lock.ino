@@ -3,6 +3,8 @@
 #include <DNSServer.h> 
 
 #define SSID_NAME "WiFi-Lock" //WiFi热点名
+#define PASSWORD "1328" //默认密码
+#define PIN 15
 
 const byte HTTP_CODE = 200;
 const byte DNS_PORT = 53;
@@ -20,16 +22,16 @@ String error2 = "分钟后再试。</h1></head></html>";
 String error = "";
 
 void pw() {
-  if(webServer.arg("pw")=="1328") {
-    digitalWrite(15, HIGH);
+  if(webServer.arg("pw")==PASSWORD) {
+    digitalWrite(PIN, HIGH);
     Serial.println("Correct");
     opened = true;
     n = 0;
   }else if(webServer.arg("pw")=="close"){
-    digitalWrite(15, LOW);
+    digitalWrite(PIN, LOW);
     opened = false;
   }else if(webServer.arg("pw").length()==4){
-    digitalWrite(15, LOW);
+    digitalWrite(PIN, LOW);
     opened = false;
     n++;
     if(n >= 5) {
@@ -61,7 +63,7 @@ void setup() {
   dnsServer.start(DNS_PORT, "*", APIP);
   webServer.onNotFound(pw);
   webServer.begin();
-  pinMode(15, OUTPUT);
+  pinMode(PIN, OUTPUT);
 }
 
 void loop() { 
